@@ -55,9 +55,24 @@ def main():
         msg += "IP address has been changed, new one is: "
         msg += new_ip_addr
         msg += "\n"
-        server = smtplib.SMTP('smtp.gmail.com', 587)
-        server.starttls()
-        server.login(send_email, email_pswrd)
+        try:
+            server = smtplib.SMTP('smtp.gmail.com', 587)
+        except:
+            print("[Error] Couldn't connect to Gmail SMTP!")
+            server.quit()
+            sys.exit(1)
+        try:
+            server.starttls()
+        except:
+            print("[Error] Couldn't start TLS!")
+            server.quit()
+            sys.exit(1)
+        try:
+            server.login(send_email, email_pswrd)
+        except:
+            print("[Error] Couldn't login to Gmail account!")
+            server.quit()
+            sys.exit(1)
         for i in range(len(rcvr_arr)):
             server.sendmail(send_email, rcvr_arr[i], msg)
             time.sleep(5) # wait for 5 sec between each mail
